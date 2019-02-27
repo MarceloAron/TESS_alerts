@@ -106,9 +106,6 @@ def login(login_url='https://tev.mit.edu/user/login/',csv=False,csv_name='./aler
 			call(['gzip','-d',gzfile])
 		os.chdir(cwd)
 
-<<<<<<< HEAD
-	return
-=======
 	return
 
 def download(login_url='https://tev.mit.edu/user/login/',csv_name='./alerts.csv', fits_dir='./fits'):
@@ -122,4 +119,3 @@ def download(login_url='https://tev.mit.edu/user/login/',csv_name='./alerts.csv'
 		login(fits=True,fits_dir=fits_dir)
 
 download()
->>>>>>> marcelo

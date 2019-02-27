@@ -2,47 +2,8 @@ import numpy as np
 import glob
 
 # =============================================================================
-<<<<<<< HEAD
-<<<<<<< HEAD
-# Parameters 
-# =============================================================================
-class OrbitalParams(object):
-	'''
-	The orbital parameters:
-		Rp    : float       - planet-to-star ratio (in units of stellar radius).
-		ecc   : float       - eccentricity of orbit.
-		per   : float       - period of orbit (in days).
-		omega : float       - argument of periastron (in degrees).
-		T0    : float       - time of inferior conjunction (in days).
-		inc   : float       - inclination (in degrees).
-		a     : float       - semi-major axis (in units of stellar radius).
-		LD    : str         - Limb-darkening law see StellarParams, default 'uni'.
-		cs    : list        - Limb-darkening coefficients.
-
-	Set the parameters by calling
-		orbparams = OrbitalParams()
-		orbparams.ecc = 0.0
-	'''
-	def __init__(self):
-		self.Rp = 0.09
-		self.ecc = 0.05
-		self.per = 4.8
-		self.omega = 272.
-		self.T0 = 0.0
-		self.a = 12.
-		self.inc = 88.
-		self.LD = 'uni'
-		self.cs = None
-
-
-=======
 # Parameter class
 # =============================================================================
->>>>>>> marcelo
-=======
-# Parameter class
-# =============================================================================
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 
 class StellarParams(object):
 	'''
@@ -95,15 +56,7 @@ def magol(LD):
 def get_LDcoeff(stelpars):
 	'''
 	Module that collects limb darkening coefficients from Vizier.
-<<<<<<< HEAD
-<<<<<<< HEAD
-	Calculated by A. Claret using ATLAS atmospheres for TESS.
-=======
 	Calculated by A. Claret using ATLAS atmospheres for TESS
->>>>>>> marcelo
-=======
-	Calculated by A. Claret using ATLAS atmospheres for TESS
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 	in ADS:2017A&A...600A..30C.
 
 	The limb darkening law is decided by the one specified in stelpars.LD.
@@ -123,35 +76,18 @@ def get_LDcoeff(stelpars):
 	       'log' : 'table27', 'nl' : 'table28', 'small' : 'table28'}
 	LDs['vals'] = {'Teff' : [3500,250,50000], 'logg' : [0.0,0.5,5.0], 
 	               'MeH' : [-5.0,0.5,1.0]}
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
 	
->>>>>>> marcelo
-=======
-	
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 	for par in LDs['vals']:
 		vals = np.arange(LDs['vals'][par][0],LDs['vals'][par][-1]+0.01,LDs['vals'][par][1])
 		if par == 'Teff':
 			minimum = np.argmin(np.sqrt((vals-stelpars.Teff)**2))
 			Teff = vals[minimum]
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 		if par == 'logg':
 			minimum = np.argmin(np.sqrt((vals-stelpars.logg)**2))
 			logg = vals[minimum]
 		if par == 'MeH':
 			minimum = np.argmin(np.sqrt((vals-stelpars.MeH)**2))
 			MeH = vals[minimum]
-<<<<<<< HEAD
->>>>>>> marcelo
-=======
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 
 	catalog = Vizier.query_constraints(catalog='J/A+A/600/A30/{}'.format(LDs[LD]),
 		                               Teff='{}'.format(Teff), 
@@ -254,15 +190,7 @@ def true_dist(time, T0, per, a, inc, ecc, omega):
 	## NOTE: Expressions like sin(omega + f) are expanded to stay clear of arctan
 	for ii in range(nn):
 		## Huge value for separation to make sure not to model planet passing behind star
-<<<<<<< HEAD
-<<<<<<< HEAD
-		if np.sin(inc)*(np.sin(omega)*cos_f[ii] + np.cos(omega)*sin_f[ii]) > 0:
-=======
 		if np.sin(inc)*(np.sin(omega)*cos_f[ii] + np.cos(omega)*sin_f[ii]) < 0:
->>>>>>> marcelo
-=======
-		if np.sin(inc)*(np.sin(omega)*cos_f[ii] + np.cos(omega)*sin_f[ii]) < 0:
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 			d[ii] = 1000.
 		else:
 			nom = a*(1.0 - ecc**2)
@@ -284,13 +212,6 @@ def LCuni(d, p):
 
 	Output:
 		flux_uni : float array - the flux from a uniform source.
-<<<<<<< HEAD
-<<<<<<< HEAD
-		flux     : float array - dummy array containing ones. 
-=======
->>>>>>> marcelo
-=======
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 	'''
 	nz = len(d)
 	flux = np.ones(nz)
@@ -308,87 +229,9 @@ def LCuni(d, p):
 			lam[i] = 1
 	
 	flux_uni = flux - lam
-<<<<<<< HEAD
-<<<<<<< HEAD
-	return flux_uni, flux
-=======
-	return flux_uni
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
-
-
-<<<<<<< HEAD
-class TransitModel(object):
-	def __init__(self, orbpars, time, sample_factor=1, exp_time=0.):
-		'''
-		Input:
-			orbpars  : object      - orbital parameters from class OrbitalParams.
-			time     : float array - times of observations.
-		'''
-		self.time = time
-
-		# Super sampling
-		self.sample_factor = sample_factor
-		self.exp_time = exp_time
-		if self.sample_factor > 1:
-			ts = np.linspace(-self.exp_time/2., self.exp_time/2., self.sample_factor)
-			self.t_sampled = (ts + self.time.reshape(self.time.size, 1)).flatten()
-		else: self.t_sampled = self.time
-		
-		## Orbital parameters
-		self.T0 = orbpars.T0
-		self.ecc = orbpars.ecc
-		self.per = orbpars.per
-		self.omega = orbpars.omega
-		self.a = orbpars.a
-		self.inc = orbpars.inc
-
-		## Get the projected seperation
-		self.d = true_dist(self.t_sampled, self.T0, self.per, self.a, self.inc, self.ecc, self.omega)
-
-	def get_LC(self, orbpars):
-		'''
-		Module that returns the light curve given of the orbit modeled
-		as described in ADS:2002ApJ...580L.171M by Mandel and Agol.
-		
-		Input:
-			orbpars : object      - orbital parameters from class OrbitalParams.
-
-		Output:
-			lc      : float array - light curve.
-
-		'''
-		if orbpars.per != self.per or orbpars.T0 != self.T0 or orbpars.ecc != self.ecc or orbpars.omega != self.omega or orbpars.a != self.a or orbpars.inc != self.inc:
-			self.d = true_dist(self.t_sampled, self.T0, self.per, self.a, self.inc, self.ecc, self.omega)
-		
-		self.T0 = orbpars.T0
-		self.ecc = orbpars.ecc
-		self.per = orbpars.per
-		self.omega = orbpars.omega
-		self.a = orbpars.a
-		self.inc = orbpars.inc
-		self.p = orbpars.Rp
-		self.LD = orbpars.LD
-		self.coeffs = orbpars.cs		
-
-		flux_uni, flux = LCuni(self.d, self.p)
-
-		if self.LD == 'uni':
-			lc = flux_uni
-		elif self.LD == 'quad':
-			magol(self.LD)
-			import quad
-			nz = len(flux)
-			quad.occultquad(self.d,self.coeffs[0],self.coeffs[1],self.p,flux,flux_uni,nz)
-			lc = flux
-
-		if self.sample_factor == 1: return lc
-		else: return np.mean(lc.reshape(-1, self.sample_factor), axis=1)
-=======
 	return flux_uni
 
 
-=======
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 def LCquad(d, c1, c2, p, flux, flux_uni):
 	'''
 	Module that returns the light curve given of the orbit modeled
@@ -411,7 +254,3 @@ def LCquad(d, c1, c2, p, flux, flux_uni):
 	quad.occultquad(d,c1,c2,p,flux,flux_uni,nz)
 	lc = flux
 	return lc
-<<<<<<< HEAD
->>>>>>> marcelo
-=======
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6

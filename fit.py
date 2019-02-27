@@ -75,21 +75,12 @@ def fit_LC(bjd, flux, errflux, P=1., T0=0., a=8., Rp=0.1, inc=90., ecc=0., omega
 
 	### Orbital parameters
 	parameters.add('P', value=P, min=0., vary=True)
-<<<<<<< HEAD
 	parameters.add('T0', value=T0, min=T0-0.1, max=T0+0.1, vary=True)
 	parameters.add('a', value=a, min=0., vary=True)
 	parameters.add('Rp', value=Rp, min=0., max=1., vary=True)
 	parameters.add('inc', value=inc, min=80., max=90., vary=True)
 	parameters.add('ecc', value=ecc, min=0., max=1., vary=False)
 	parameters.add('omega', value=omega, min=0., max=360., vary=False)
-=======
-	parameters.add('T0', value=T0, vary=True)
-	parameters.add('a', value=a, min=0., vary=True)
-	parameters.add('Rp', value=Rp, min=0., max=1., vary=True)
-	parameters.add('inc', value=inc, min=0., max=90., vary=True)
-	parameters.add('ecc', value=ecc, min=0., max=1., vary=True)
-	parameters.add('omega', value=omega, min=0., max=360., vary=True)
->>>>>>> 5d66aeec13a16aa6d7550a1edc1d585e8a3f22c6
 
 	### Limb darkening coefficients
 	if LD not in ['uni','quad']:
