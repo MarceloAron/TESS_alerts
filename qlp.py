@@ -40,7 +40,7 @@ csvfile = open('qlptable.csv','w')
 writer = csv.writer(csvfile,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
 writer.writerow(header) 
 
-pdf = PdfPages('qlp3.pdf')
+pdf = PdfPages('qlp.pdf')
 
 ## Open .fits QLP files
 fname = 'fits/*cr_llc.fits'
